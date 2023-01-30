@@ -12,6 +12,13 @@ jobs:
         with:
           swift-version: "5.7"
       - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        id: tools-cache
+        with:
+          path: Tools/.build
+          key: 20230131-${{ runner.os }}-spm-tools-${{ hashFiles('**/Tools/Package.resolved') }}
+          restore-keys: |
+            20230131-${{ runner.os }}-spm-tools-
       - name: Build tools
         run: make build-tools
       - name: Run lint
