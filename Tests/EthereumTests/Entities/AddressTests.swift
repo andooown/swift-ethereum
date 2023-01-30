@@ -4,45 +4,43 @@ import XCTest
 
 final class AddressTests: XCTestCase {
     func testInit() throws {
-        XCTContext.runActivity(named: "init()") { _ in
-            XCTAssertEqual(Address().rawValue, Array(repeating: 0, count: Address.length))
-        }
+        XCTAssertEqual(Address().rawValue, Array(repeating: 0, count: Address.length))
+    }
 
-        XCTContext.runActivity(named: "init(bytes:)") { _ in
-            XCTAssertEqual(Address(bytes: []).rawValue, Array(repeating: 0, count: Address.length))
-            XCTAssertEqual(
-                Address(bytes: [1, 2, 3]).rawValue,
-                Array(repeating: 0, count: Address.length - 3) + [1, 2, 3]
-            )
-            XCTAssertEqual(
-                Address(bytes: (0..<30).map(UInt8.init)).rawValue,
-                (10..<30).map(UInt8.init)
-            )
-        }
+    func testInitWithBytes() throws {
+        XCTAssertEqual(Address(bytes: []).rawValue, Array(repeating: 0, count: Address.length))
+        XCTAssertEqual(
+            Address(bytes: [1, 2, 3]).rawValue,
+            Array(repeating: 0, count: Address.length - 3) + [1, 2, 3]
+        )
+        XCTAssertEqual(
+            Address(bytes: (0..<30).map(UInt8.init)).rawValue,
+            (10..<30).map(UInt8.init)
+        )
+    }
 
-        XCTContext.runActivity(named: "init(hexString:)") { _ in
-            XCTAssertEqual(Address(hexString: ""), Address())
-            XCTAssertEqual(Address(hexString: "0x"), Address())
-            XCTAssertEqual(Address(hexString: "1"), Address(bytes: [0x1]))
-            XCTAssertEqual(Address(hexString: "0x1"), Address(bytes: [0x1]))
-            XCTAssertEqual(Address(hexString: "12"), Address(bytes: [0x12]))
-            XCTAssertEqual(Address(hexString: "0x12"), Address(bytes: [0x12]))
-            XCTAssertEqual(Address(hexString: "1234"), Address(bytes: [0x12, 0x34]))
-            XCTAssertEqual(
-                Address(hexString: "0xB9084d9c8A70b8Ecd2b6878ceF735F11b060DE32"),
-                Address(bytes: [
-                    0xB9, 0x08, 0x4d, 0x9c, 0x8A, 0x70, 0xb8, 0xEc, 0xd2, 0xb6, 0x87, 0x8c, 0xeF,
-                    0x73, 0x5F, 0x11, 0xb0, 0x60, 0xDE, 0x32,
-                ])
-            )
-            XCTAssertEqual(
-                Address(
-                    hexString: (0..<30).reduce(into: "") { $0.append(String(format: "%02x", $1)) }
-                ),
-                Address(bytes: (10..<30).map(UInt8.init))
-            )
-            XCTAssertEqual(Address(hexString: "invalid string"), Address())
-        }
+    func testInitWithHexString() throws {
+        XCTAssertEqual(Address(hexString: ""), Address())
+        XCTAssertEqual(Address(hexString: "0x"), Address())
+        XCTAssertEqual(Address(hexString: "1"), Address(bytes: [0x1]))
+        XCTAssertEqual(Address(hexString: "0x1"), Address(bytes: [0x1]))
+        XCTAssertEqual(Address(hexString: "12"), Address(bytes: [0x12]))
+        XCTAssertEqual(Address(hexString: "0x12"), Address(bytes: [0x12]))
+        XCTAssertEqual(Address(hexString: "1234"), Address(bytes: [0x12, 0x34]))
+        XCTAssertEqual(
+            Address(hexString: "0xB9084d9c8A70b8Ecd2b6878ceF735F11b060DE32"),
+            Address(bytes: [
+                0xB9, 0x08, 0x4d, 0x9c, 0x8A, 0x70, 0xb8, 0xEc, 0xd2, 0xb6, 0x87, 0x8c, 0xeF,
+                0x73, 0x5F, 0x11, 0xb0, 0x60, 0xDE, 0x32,
+            ])
+        )
+        XCTAssertEqual(
+            Address(
+                hexString: (0..<30).reduce(into: "") { $0.append(String(format: "%02x", $1)) }
+            ),
+            Address(bytes: (10..<30).map(UInt8.init))
+        )
+        XCTAssertEqual(Address(hexString: "invalid string"), Address())
     }
 
     func testTryParse() throws {
