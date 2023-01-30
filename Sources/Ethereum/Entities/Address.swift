@@ -15,9 +15,7 @@ public struct Address: Hashable {
     }
 
     public init(bytes: [UInt8]) {
-        self.rawValue =
-            Array(repeating: 0, count: max(Self.length - bytes.count, 0))
-            + bytes.suffix(Self.length)
+        self.rawValue = Array(bytes.suffix(Self.length)).paddedLeft(to: Self.length, with: 0)
     }
 
     public init(hexString: String) {
@@ -54,11 +52,16 @@ public extension Address {
     }
 }
 
-extension Address: ABIDecodableStaticType {
+extension Address: ABICodable, ABIDecodableStaticType {
     public init(from decoder: ABIDecoder) throws {
         var container = decoder.container(maxSlots: nil)
         let bytes = try container.decodeBytes(slots: 1)
         self.init(bytes: bytes)
+    }
+
+    public func encode(to encoder: ABIEncoder) throws {
+        var container = encoder.container()
+        try container.encode(bytes: rawValue.paddedLeft(to: 32, with: 0))
     }
 }
 

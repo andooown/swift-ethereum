@@ -14,37 +14,6 @@ public struct ABIDataDecoder {
     }
 }
 
-private extension Array {
-    func chunked(by chunkSize: Int) -> [[Element]] {
-        return stride(from: 0, to: self.count, by: chunkSize).map {
-            Array(self[$0..<Swift.min($0 + chunkSize, self.count)])
-        }
-    }
-}
-
-public enum ABIDecodingError: Error {
-    public struct Context {
-        public let debugDescription: String
-
-        public init(debugDescription: String) {
-            self.debugDescription = debugDescription
-        }
-    }
-
-    case dataCorrupted(Context)
-}
-
-private extension ABIDecodingError {
-    static func notEnoughSlotsAvailable(required: Int, received: Int) -> Self {
-        return .dataCorrupted(
-            .init(
-                debugDescription:
-                    "Not enough slots available to decode. Requested \(required), but received \(received)."
-            )
-        )
-    }
-}
-
 private struct ABIDataDecoderImpl: ABIDecoder {
     private var slots: [[UInt8]]
     private let container: ABIDataDecodingContainer?

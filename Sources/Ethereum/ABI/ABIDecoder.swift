@@ -2,6 +2,29 @@ public protocol ABIDecoder {
     func container(maxSlots: Int?) -> ABIDecodingContainer
 }
 
+public enum ABIDecodingError: Error {
+    public struct Context {
+        public let debugDescription: String
+
+        public init(debugDescription: String) {
+            self.debugDescription = debugDescription
+        }
+    }
+
+    case dataCorrupted(Context)
+}
+
+internal extension ABIDecodingError {
+    static func notEnoughSlotsAvailable(required: Int, received: Int) -> Self {
+        return .dataCorrupted(
+            .init(
+                debugDescription:
+                    "Not enough slots available to decode. Requested \(required), but received \(received)."
+            )
+        )
+    }
+}
+
 public protocol ABIDecodingContainer {
     var isAtEnd: Bool { get }
 
