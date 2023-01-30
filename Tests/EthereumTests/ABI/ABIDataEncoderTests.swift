@@ -11,7 +11,9 @@ final class ABIDataEncoderTests: XCTestCase {
             ])
         )
         XCTAssertEqual(
-            try ABIDataEncoder().encode(Address(hexString: "0xB9084d9c8A70b8Ecd2b6878ceF735F11b060DE32")).bytes,
+            try ABIDataEncoder().encode(
+                Address(hexString: "0xB9084d9c8A70b8Ecd2b6878ceF735F11b060DE32")
+            ).bytes,
             bytes(from: [
                 "0x000000000000000000000000B9084d9c8A70b8Ecd2b6878ceF735F11b060DE32"
             ])
