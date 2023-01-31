@@ -1,8 +1,33 @@
+import BigInt
 import XCTest
 
 @testable import Ethereum
 
 final class ABIDataEncoderTests: XCTestCase {
+    func testEncodeBigUInt() throws {
+        XCTAssertEqual(
+            try ABIDataEncoder().encode(BigUInt(0)).bytes,
+            bytes(from: [
+                "0x0000000000000000000000000000000000000000000000000000000000000000"
+            ])
+        )
+        XCTAssertEqual(
+            try ABIDataEncoder().encode(BigUInt(123456)).bytes,
+            bytes(from: [
+                "0x000000000000000000000000000000000000000000000000000000000001e240"
+            ])
+        )
+        XCTAssertEqual(
+            try ABIDataEncoder().encode(
+                BigUInt(
+                    "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", radix: 16)!
+            ).bytes,
+            bytes(from: [
+                "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            ])
+        )
+    }
+
     func testEncodeAddress() throws {
         XCTAssertEqual(
             try ABIDataEncoder().encode(Address()).bytes,
