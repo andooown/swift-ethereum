@@ -39,20 +39,39 @@ final class ABIDataDecoderTests: XCTestCase {
             try ABIDataDecoder().decode(
                 BigInt.self,
                 from: inputBytes(from: [
+                    "0x0000000000000000000000000000000000000000000000000000000000000001"
+                ])
+            ),
+            BigInt(1)
+        )
+        XCTAssertEqual(
+            try ABIDataDecoder().decode(
+                BigInt.self,
+                from: inputBytes(from: [
+                    "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+                ])
+            ),
+            BigInt(-1)
+        )
+
+        XCTAssertEqual(
+            try ABIDataDecoder().decode(
+                BigInt.self,
+                from: inputBytes(from: [
                     "0x0000000000000000000000000000000000000000000000000000000000123456"
                 ])
             ),
             BigInt(1_193_046)
         )
-        // TODO: negative value
-        //XCTAssertEqual(
-        //    try ABIDataDecoder().decode(
-        //        BigInt.self,
-        //        from: inputBytes(
-        //            from: "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff85")
-        //    ),
-        //    BigInt(-123)
-        //)
+        XCTAssertEqual(
+            try ABIDataDecoder().decode(
+                BigInt.self,
+                from: inputBytes(from: [
+                    "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff85"
+                ])
+            ),
+            BigInt(-123)
+        )
     }
 
     func testDecodeString() throws {

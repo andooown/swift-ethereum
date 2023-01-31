@@ -17,10 +17,21 @@ extension BigUInt: ABIDecodableStaticType {
 }
 
 extension BigInt: ABIDecodableStaticType {
+    private static let maxUInt256 = (BigUInt(1) << 256) - 1
+
     public init(from decoder: ABIDecoder) throws {
         var container = decoder.container(maxSlots: nil)
         let bytes = try container.decodeBytes(slots: 1)
-        self.init(Data(bytes))
+
+        let sign: Sign = (bytes[0] & 0b10000000) == 0 ? .plus : .minus
+        switch sign {
+        case .plus:
+            self.init(Data(bytes))
+
+        case .minus:
+            let magnitude = Self.maxUInt256 - BigUInt(Data(bytes)) + 1
+            self.init(sign: .minus, magnitude: magnitude)
+        }
     }
 }
 
