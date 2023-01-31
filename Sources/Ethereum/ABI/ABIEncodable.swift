@@ -4,7 +4,10 @@ public protocol ABIEncodable {
     func encode(to encoder: ABIEncoder) throws
 }
 
-extension BigUInt: ABIEncodable {
+public protocol ABIEncodableStaticType: ABIEncodable {
+}
+
+extension BigUInt: ABIEncodableStaticType {
     public func encode(to encoder: ABIEncoder) throws {
         var container = encoder.container()
 
@@ -13,7 +16,7 @@ extension BigUInt: ABIEncodable {
     }
 }
 
-extension BigInt: ABIEncodable {
+extension BigInt: ABIEncodableStaticType {
     public func encode(to encoder: ABIEncoder) throws {
         var container = encoder.container()
 

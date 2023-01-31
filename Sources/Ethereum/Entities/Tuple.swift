@@ -25,5 +25,12 @@ public struct Tuple1<A>: ABIDecodable where A: ABIDecodable {
     }
 }
 
+extension Tuple1: ABIEncodable where A: ABIEncodableStaticType {
+    public func encode(to encoder: ABIEncoder) throws {
+        var container = encoder.container()
+        try container.encode(value0)
+    }
+}
+
 extension Tuple1: Equatable where A: Equatable {}
 extension Tuple1: Hashable where A: Hashable {}

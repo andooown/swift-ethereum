@@ -66,6 +66,14 @@ final class ABIDataEncoderTests: XCTestCase {
             "000000000000000000000000b9084d9c8a70b8ecd2b6878cef735f11b060de32"
         )
     }
+
+    func testEncodeTuple() throws {
+        // Tuple1 - Static
+        XCTAssertEqual(
+            try ABIDataEncoder().encode(Tuple1(value0: BigUInt(1))).toHexString(),
+            "0000000000000000000000000000000000000000000000000000000000000001"
+        )
+    }
 }
 
 private extension ABIDataEncoderTests {
