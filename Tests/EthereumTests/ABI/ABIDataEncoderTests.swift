@@ -22,6 +22,38 @@ final class ABIDataEncoderTests: XCTestCase {
         )
     }
 
+    func testEncodeBigInt() throws {
+        XCTAssertEqual(
+            try ABIDataEncoder().encode(BigInt(0)).toHexString(),
+            "0000000000000000000000000000000000000000000000000000000000000000"
+        )
+        XCTAssertEqual(
+            try ABIDataEncoder().encode(BigInt(1)).toHexString(),
+            "0000000000000000000000000000000000000000000000000000000000000001"
+        )
+        XCTAssertEqual(
+            try ABIDataEncoder().encode(BigInt(-1)).toHexString(),
+            "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        )
+
+        XCTAssertEqual(
+            try ABIDataEncoder().encode(BigInt(123456)).toHexString(),
+            "000000000000000000000000000000000000000000000000000000000001e240"
+        )
+        XCTAssertEqual(
+            try ABIDataEncoder().encode(BigInt(-123456)).toHexString(),
+            "fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe1dc0"
+        )
+
+        XCTAssertEqual(
+            try ABIDataEncoder().encode(
+                BigInt(
+                    "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", radix: 16)!
+            ).toHexString(),
+            "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        )
+    }
+
     func testEncodeAddress() throws {
         XCTAssertEqual(
             try ABIDataEncoder().encode(Address()).toHexString(),
