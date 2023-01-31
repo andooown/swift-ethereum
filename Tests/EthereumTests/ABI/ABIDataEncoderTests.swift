@@ -6,42 +6,32 @@ import XCTest
 final class ABIDataEncoderTests: XCTestCase {
     func testEncodeBigUInt() throws {
         XCTAssertEqual(
-            try ABIDataEncoder().encode(BigUInt(0)).bytes,
-            bytes(from: [
-                "0x0000000000000000000000000000000000000000000000000000000000000000"
-            ])
+            try ABIDataEncoder().encode(BigUInt(0)).toHexString(),
+            "0000000000000000000000000000000000000000000000000000000000000000"
         )
         XCTAssertEqual(
-            try ABIDataEncoder().encode(BigUInt(123456)).bytes,
-            bytes(from: [
-                "0x000000000000000000000000000000000000000000000000000000000001e240"
-            ])
+            try ABIDataEncoder().encode(BigUInt(123456)).toHexString(),
+            "000000000000000000000000000000000000000000000000000000000001e240"
         )
         XCTAssertEqual(
             try ABIDataEncoder().encode(
                 BigUInt(
                     "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", radix: 16)!
-            ).bytes,
-            bytes(from: [
-                "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
-            ])
+            ).toHexString(),
+            "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
         )
     }
 
     func testEncodeAddress() throws {
         XCTAssertEqual(
-            try ABIDataEncoder().encode(Address()).bytes,
-            bytes(from: [
-                "0x0000000000000000000000000000000000000000000000000000000000000000"
-            ])
+            try ABIDataEncoder().encode(Address()).toHexString(),
+            "0000000000000000000000000000000000000000000000000000000000000000"
         )
         XCTAssertEqual(
             try ABIDataEncoder().encode(
                 Address(hexString: "0xB9084d9c8A70b8Ecd2b6878ceF735F11b060DE32")
-            ).bytes,
-            bytes(from: [
-                "0x000000000000000000000000B9084d9c8A70b8Ecd2b6878ceF735F11b060DE32"
-            ])
+            ).toHexString(),
+            "000000000000000000000000b9084d9c8a70b8ecd2b6878cef735f11b060de32"
         )
     }
 }
