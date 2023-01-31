@@ -20,6 +20,12 @@ private struct ABIDataEncoderImpl: ABIEncoder {
     func container() -> ABIEncodingContainer {
         return ABIDataEncodingContainer(encoder: self)
     }
+
+    func encodeImmediately<T>(_ value: T) throws -> [UInt8] where T: ABIEncodable {
+        let encoder = ABIDataEncoderImpl()
+        try value.encode(to: encoder)
+        return encoder.storage.data.bytes
+    }
 }
 
 private struct ABIDataEncodingContainer: ABIEncodingContainer {

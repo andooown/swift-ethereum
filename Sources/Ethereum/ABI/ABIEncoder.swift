@@ -1,5 +1,7 @@
 public protocol ABIEncoder {
     func container() -> ABIEncodingContainer
+
+    func encodeImmediately<T>(_ value: T) throws -> [UInt8] where T: ABIEncodable
 }
 
 public enum ABIEncodingError: Error {
@@ -10,6 +12,8 @@ public enum ABIEncodingError: Error {
             self.debugDescription = debugDescription
         }
     }
+
+    case incompatibleToEncode(Context)
 }
 
 public protocol ABIEncodingContainer {

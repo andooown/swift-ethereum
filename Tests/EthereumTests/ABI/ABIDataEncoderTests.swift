@@ -67,11 +67,30 @@ final class ABIDataEncoderTests: XCTestCase {
         )
     }
 
+    func testEncodeString() throws {
+        XCTAssertEqual(
+            try ABIDataEncoder().encode("dave").toHexString(),
+            [
+                "0000000000000000000000000000000000000000000000000000000000000004",
+                "6461766500000000000000000000000000000000000000000000000000000000",
+            ].joined()
+        )
+    }
+
     func testEncodeTuple() throws {
         // Tuple1 - Static
         XCTAssertEqual(
             try ABIDataEncoder().encode(Tuple1(value0: BigUInt(1))).toHexString(),
             "0000000000000000000000000000000000000000000000000000000000000001"
+        )
+        // Tuple1 - Dynamic
+        XCTAssertEqual(
+            try ABIDataEncoder().encode(Tuple1(value0: "dave")).toHexString(),
+            [
+                "0000000000000000000000000000000000000000000000000000000000000020",
+                "0000000000000000000000000000000000000000000000000000000000000004",
+                "6461766500000000000000000000000000000000000000000000000000000000",
+            ].joined()
         )
     }
 }

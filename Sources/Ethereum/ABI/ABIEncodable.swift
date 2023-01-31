@@ -5,9 +5,13 @@ public protocol ABIEncodable {
 }
 
 public protocol ABIEncodableStaticType: ABIEncodable {
+    /// in bytes length
+    static var typeSize: Int { get }
 }
 
 extension BigUInt: ABIEncodableStaticType {
+    public static let typeSize = 32
+
     public func encode(to encoder: ABIEncoder) throws {
         var container = encoder.container()
 
@@ -17,6 +21,8 @@ extension BigUInt: ABIEncodableStaticType {
 }
 
 extension BigInt: ABIEncodableStaticType {
+    public static let typeSize = 32
+
     public func encode(to encoder: ABIEncoder) throws {
         var container = encoder.container()
 
@@ -30,5 +36,23 @@ extension BigInt: ABIEncodableStaticType {
             let bytes = complement.serialize().bytes.paddedLeft(to: 32, with: 0xFF).suffix(32)
             try container.encode(bytes: bytes)
         }
+    }
+}
+
+extension String: ABIEncodable {
+    public func encode(to encoder: ABIEncoder) throws {
+        var container = encoder.container()
+
+        guard let bytes = data(using: .utf8)?.bytes else {
+            throw ABIEncodingError.incompatibleToEncode(
+                .init(debugDescription: "Can't get UTF8 bytes from String."))
+        }
+
+        try container.encode(BigUInt(bytes.count))
+
+        let padded =
+            bytes.count % 32 == 0
+            ? bytes : bytes + Array(repeating: 0, count: 32 - bytes.count % 32)
+        try container.encode(bytes: padded)
     }
 }
