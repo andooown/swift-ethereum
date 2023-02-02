@@ -52,16 +52,20 @@ public extension Address {
     }
 }
 
-extension Address: ABICodable, ABIDecodableStaticType {
-    public init(from decoder: ABIDecoder) throws {
-        var container = decoder.container(maxSlots: nil)
-        let bytes = try container.decodeBytes(slots: 1)
-        self.init(bytes: bytes)
-    }
+extension Address: ABIEncodableStaticType {
+    public static let typeSize = 32
 
     public func encode(to encoder: ABIEncoder) throws {
         var container = encoder.container()
         try container.encode(bytes: rawValue.paddedLeft(to: 32, with: 0))
+    }
+}
+
+extension Address: ABIDecodableStaticType {
+    public init(from decoder: ABIDecoder) throws {
+        var container = decoder.container(maxSlots: nil)
+        let bytes = try container.decodeBytes(slots: 1)
+        self.init(bytes: bytes)
     }
 }
 
