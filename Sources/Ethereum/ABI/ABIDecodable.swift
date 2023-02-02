@@ -49,3 +49,25 @@ extension String: ABIDecodable {
         self = value
     }
 }
+
+extension Array: ABIDecodable where Element: ABIDecodable {
+    public init(from decoder: ABIDecoder) throws {
+        self.init()
+
+        var container = decoder.container(maxSlots: nil)
+        let count = try container.decode(BigUInt.self)
+        if Element.self is ABIDecodableStaticType.Type {
+            for _ in 0..<count {
+                append(try container.decode(Element.self))
+            }
+        } else {
+            let baseContainer = container.nestedContainer(maxSlots: nil, bindsIndex: false)
+            for _ in 0..<count {
+                let offset = try container.decode(BigUInt.self)
+
+                var valueContainer = baseContainer.advanced(by: Int(offset / 32))
+                append(try valueContainer.decode(Element.self))
+            }
+        }
+    }
+}
