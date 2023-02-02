@@ -21,6 +21,7 @@ jobs:
             20230131-${{ runner.os }}-spm-tools-
       - name: Build tools
         run: make build-tools
+        if: steps.tools-cache.outputs.cache-hit != 'true'
       - name: Run lint
         run: make lint-strict
 

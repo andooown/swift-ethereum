@@ -39,20 +39,39 @@ final class ABIDataDecoderTests: XCTestCase {
             try ABIDataDecoder().decode(
                 BigInt.self,
                 from: inputBytes(from: [
+                    "0x0000000000000000000000000000000000000000000000000000000000000001"
+                ])
+            ),
+            BigInt(1)
+        )
+        XCTAssertEqual(
+            try ABIDataDecoder().decode(
+                BigInt.self,
+                from: inputBytes(from: [
+                    "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+                ])
+            ),
+            BigInt(-1)
+        )
+
+        XCTAssertEqual(
+            try ABIDataDecoder().decode(
+                BigInt.self,
+                from: inputBytes(from: [
                     "0x0000000000000000000000000000000000000000000000000000000000123456"
                 ])
             ),
             BigInt(1_193_046)
         )
-        // TODO: negative value
-        //XCTAssertEqual(
-        //    try ABIDataDecoder().decode(
-        //        BigInt.self,
-        //        from: inputBytes(
-        //            from: "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff85")
-        //    ),
-        //    BigInt(-123)
-        //)
+        XCTAssertEqual(
+            try ABIDataDecoder().decode(
+                BigInt.self,
+                from: inputBytes(from: [
+                    "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff85"
+                ])
+            ),
+            BigInt(-123)
+        )
     }
 
     func testDecodeString() throws {
@@ -91,11 +110,47 @@ final class ABIDataDecoderTests: XCTestCase {
             try ABIDataDecoder().decode(
                 Tuple1<String>.self,
                 from: inputBytes(from: [
+                    "0x0000000000000000000000000000000000000000000000000000000000000020",
                     "0x0000000000000000000000000000000000000000000000000000000000000004",
                     "0x6461766500000000000000000000000000000000000000000000000000000000",
                 ])
             ),
             Tuple1(value0: "dave")
+        )
+    }
+
+    func testDecodeArray() throws {
+        // Static
+        XCTAssertEqual(
+            try ABIDataDecoder().decode(
+                [BigUInt].self,
+                from: inputBytes(from: [
+                    "0x0000000000000000000000000000000000000000000000000000000000000003",
+                    "0x0000000000000000000000000000000000000000000000000000000000000001",
+                    "0x0000000000000000000000000000000000000000000000000000000000000002",
+                    "0x0000000000000000000000000000000000000000000000000000000000000003",
+                ])
+            ),
+            [BigUInt(1), BigUInt(2), BigUInt(3)]
+        )
+        // Dynamic
+        XCTAssertEqual(
+            try ABIDataDecoder().decode(
+                [String].self,
+                from: inputBytes(from: [
+                    "0x0000000000000000000000000000000000000000000000000000000000000003",
+                    "0x0000000000000000000000000000000000000000000000000000000000000060",
+                    "0x00000000000000000000000000000000000000000000000000000000000000a0",
+                    "0x00000000000000000000000000000000000000000000000000000000000000e0",
+                    "0x0000000000000000000000000000000000000000000000000000000000000005",
+                    "0x6170706c65000000000000000000000000000000000000000000000000000000",
+                    "0x0000000000000000000000000000000000000000000000000000000000000004",
+                    "0x626f6f6b00000000000000000000000000000000000000000000000000000000",
+                    "0x0000000000000000000000000000000000000000000000000000000000000003",
+                    "0x6361740000000000000000000000000000000000000000000000000000000000",
+                ])
+            ),
+            ["apple", "book", "cat"]
         )
     }
 }
