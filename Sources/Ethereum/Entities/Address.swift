@@ -53,7 +53,9 @@ public extension Address {
 }
 
 extension Address: ABIEncodableStaticType {
-    public static let typeSize = 32
+    public var typeSize: Int {
+        32
+    }
 
     public func encode(to encoder: ABIEncoder) throws {
         var container = encoder.container()

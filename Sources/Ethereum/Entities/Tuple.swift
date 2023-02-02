@@ -18,16 +18,16 @@ extension Tuple1: ABIEncodable where A: ABIEncodable {
 
         let values: [ABIEncodable] = [value0]
         var tailOffset = values.reduce(into: 0) {
-            guard let staticType = type(of: $1) as? ABIEncodableStaticType.Type else {
+            guard let staticValue = $1 as? ABIEncodableStaticType else {
                 $0 += 32
                 return
             }
-            $0 += staticType.typeSize
+            $0 += staticValue.typeSize
         }
 
         var tailBytes = [UInt8]()
         for value in values {
-            if type(of: value) is ABIEncodableStaticType.Type {
+            if value is ABIEncodableStaticType {
                 try container.encode(value)
             } else {
                 try container.encode(BigUInt(tailOffset))
@@ -45,8 +45,8 @@ extension Tuple1: ABIEncodable where A: ABIEncodable {
 }
 
 extension Tuple1: ABIEncodableStaticType where A: ABIEncodableStaticType {
-    public static var typeSize: Int {
-        A.typeSize
+    public var typeSize: Int {
+        value0.typeSize
     }
 }
 

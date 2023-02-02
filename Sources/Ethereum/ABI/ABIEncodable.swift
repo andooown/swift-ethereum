@@ -6,11 +6,13 @@ public protocol ABIEncodable {
 
 public protocol ABIEncodableStaticType: ABIEncodable {
     /// in bytes length
-    static var typeSize: Int { get }
+    var typeSize: Int { get }
 }
 
 extension BigUInt: ABIEncodableStaticType {
-    public static let typeSize = 32
+    public var typeSize: Int {
+        32
+    }
 
     public func encode(to encoder: ABIEncoder) throws {
         var container = encoder.container()
@@ -21,7 +23,9 @@ extension BigUInt: ABIEncodableStaticType {
 }
 
 extension BigInt: ABIEncodableStaticType {
-    public static let typeSize = 32
+    public var typeSize: Int {
+        32
+    }
 
     public func encode(to encoder: ABIEncoder) throws {
         var container = encoder.container()
@@ -54,5 +58,37 @@ extension String: ABIEncodable {
             bytes.count % 32 == 0
             ? bytes : bytes + Array(repeating: 0, count: 32 - bytes.count % 32)
         try container.encode(bytes: padded)
+    }
+}
+
+extension Array: ABIEncodable where Element: ABIEncodable {
+    public func encode(to encoder: ABIEncoder) throws {
+        var container = encoder.container()
+        try container.encode(BigUInt(count))
+
+        var tailOffset = reduce(into: 0) {
+            guard let staticValue = $1 as? ABIEncodableStaticType else {
+                $0 += 32
+                return
+            }
+            $0 += staticValue.typeSize
+        }
+
+        var tailBytes = [UInt8]()
+        for value in self {
+            if value is ABIEncodableStaticType {
+                try container.encode(value)
+            } else {
+                try container.encode(BigUInt(tailOffset))
+
+                let encoded = try encoder.encodeImmediately(value)
+                tailOffset += encoded.count
+                tailBytes.append(contentsOf: encoded)
+            }
+        }
+
+        if !tailBytes.isEmpty {
+            try container.encode(bytes: tailBytes)
+        }
     }
 }
