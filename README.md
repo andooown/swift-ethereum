@@ -42,6 +42,12 @@ struct Params: ABICodable {
 }
 ```
 
+## Author
+
+@andooown
+
 ## License
+
+Apache License Version 2.0
 
 This product includes software developed by the "Marcin Krzyzanowski" (http://krzyzanowskim.com/).
