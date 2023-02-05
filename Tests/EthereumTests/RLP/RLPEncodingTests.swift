@@ -22,6 +22,10 @@ final class RLPEncodingTests: XCTestCase {
             try "".encodeToRLP().toHexString(),
             "80"
         )
+        XCTAssertEqual(
+            try Data().encodeToRLP().toHexString(),
+            "80"
+        )
         // the empty list = [ 0xc0 ]
         XCTAssertEqual(
             try [String]().encodeToRLP().toHexString(),

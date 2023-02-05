@@ -44,6 +44,18 @@ extension String: RLPEncodable {
     }
 }
 
+extension Optional: RLPEncodable where Wrapped: RLPEncodable {
+    public func encodeToRLP() throws -> Data {
+        switch self {
+        case .none:
+            return Data()
+
+        case .some(let wrapped):
+            return try wrapped.encodeToRLP()
+        }
+    }
+}
+
 extension Array: RLPEncodable where Element: RLPEncodable {
     public func encodeToRLP() throws -> Data {
         let bytes = try reduce(into: Data()) {
