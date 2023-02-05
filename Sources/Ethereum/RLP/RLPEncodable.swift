@@ -78,15 +78,9 @@ extension Int: RLPEncodable {
 
 extension BigInt: RLPEncodable {
     public func encodeToRLP() throws -> Data {
-        let data: Data
-        if isZero {
-            data = Data([0x00])
-        } else {
-            let b = serialize().bytes
-            let headZeros = b.firstIndex(where: { $0 != 0x00 }) ?? 0
-            data = Data(b.dropFirst(headZeros))
-        }
-
+        let b = serialize().bytes
+        let headZeros = b.firstIndex(where: { $0 != 0x00 }) ?? 0
+        let data = Data(b.dropFirst(headZeros))
         return try data.encodeToRLP()
     }
 }

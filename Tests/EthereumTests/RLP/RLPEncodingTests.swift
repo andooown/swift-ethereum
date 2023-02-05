@@ -34,7 +34,7 @@ final class RLPEncodingTests: XCTestCase {
         // the integer 0 = [ 0x80 ]
         XCTAssertEqual(
             try 0.encodeToRLP().toHexString(),
-            "00"
+            "80"
         )
         // the encoded integer 0 ('\x00') = [ 0x00 ]
         XCTAssertEqual(
