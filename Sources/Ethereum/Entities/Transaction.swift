@@ -1,4 +1,5 @@
 import BigInt
+import Foundation
 
 public struct Transaction {
     public let nonce: BigUInt
@@ -6,7 +7,7 @@ public struct Transaction {
     public let gas: BigUInt
     public let to: Address?
     public let value: BigUInt
-    public let data: [UInt8]
+    public let data: Data
 
     public init(
         nonce: BigUInt,
@@ -14,7 +15,7 @@ public struct Transaction {
         gas: BigUInt,
         to: Address? = nil,
         value: BigUInt,
-        data: [UInt8]
+        data: Data = Data()
     ) {
         self.nonce = nonce
         self.gasPrice = gasPrice
@@ -22,6 +23,17 @@ public struct Transaction {
         self.to = to
         self.value = value
         self.data = data
+    }
+
+    public func withSignature(r: BigInt, s: BigInt, v: BigInt) -> SignedTransaction {
+        SignedTransaction(tx: self, v: v, r: r, s: s)
+    }
+
+    public func signed(signer: Signer, key: PrivateKey) throws -> SignedTransaction {
+        let hash = try signer.hash(tx: self)
+        let signature = try key.sign(digest: hash)
+        let (r, s, v) = try signer.signatureValues(from: signature)
+        return withSignature(r: r, s: s, v: v)
     }
 }
 
@@ -45,7 +57,17 @@ public struct SignedTransaction {
 }
 
 extension SignedTransaction: RLPEncodable {
-    public func encodeToRLP() throws -> [UInt8] {
-        []
+    public func encodeToRLP() throws -> Data {
+        try [
+            AnyRLPEncodable(tx.nonce),
+            AnyRLPEncodable(tx.gasPrice),
+            AnyRLPEncodable(tx.gas),
+            AnyRLPEncodable(tx.to),
+            AnyRLPEncodable(tx.value),
+            AnyRLPEncodable(tx.data),
+            AnyRLPEncodable(v),
+            AnyRLPEncodable(r),
+            AnyRLPEncodable(s),
+        ].encodeToRLP()
     }
 }
