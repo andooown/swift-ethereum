@@ -23,7 +23,7 @@ public struct Tuple${tupleSize}<${tupleTypeParameters}> {
 
     public init(
 %   for i in range(tupleSize):
-        ${valueVariable(i)}: ${typeParameter(i)}${"," if i < tupleSize - 1 else ""}
+        _ ${valueVariable(i)}: ${typeParameter(i)}${"," if i < tupleSize - 1 else ""}
 %   end
     ) {
 %   for i in range(tupleSize):

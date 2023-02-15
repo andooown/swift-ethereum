@@ -80,12 +80,12 @@ final class ABIDataEncoderTests: XCTestCase {
     func testEncodeTuple() throws {
         // Tuple1 - Static
         XCTAssertEqual(
-            try ABIDataEncoder().encode(Tuple1(value0: BigUInt(1))).toHexString(),
+            try ABIDataEncoder().encode(Tuple1(BigUInt(1))).toHexString(),
             "0000000000000000000000000000000000000000000000000000000000000001"
         )
         // Tuple1 - Dynamic
         XCTAssertEqual(
-            try ABIDataEncoder().encode(Tuple1(value0: "dave")).toHexString(),
+            try ABIDataEncoder().encode(Tuple1("dave")).toHexString(),
             [
                 "0000000000000000000000000000000000000000000000000000000000000020",
                 "0000000000000000000000000000000000000000000000000000000000000004",

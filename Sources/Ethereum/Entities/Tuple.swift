@@ -7,7 +7,7 @@ public struct Tuple1<T0> {
     public let value0: T0
 
     public init(
-        value0: T0
+        _ value0: T0
     ) {
         self.value0 = value0
     }
@@ -84,8 +84,8 @@ public struct Tuple2<T0, T1> {
     public let value1: T1
 
     public init(
-        value0: T0,
-        value1: T1
+        _ value0: T0,
+        _ value1: T1
     ) {
         self.value0 = value0
         self.value1 = value1

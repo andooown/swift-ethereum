@@ -104,7 +104,7 @@ final class ABIDataDecoderTests: XCTestCase {
                     "0x0000000000000000000000000000000000000000000000000000000000123456"
                 ])
             ),
-            Tuple1(value0: 1_193_046)
+            Tuple1(1_193_046)
         )
         XCTAssertEqual(
             try ABIDataDecoder().decode(
@@ -115,7 +115,7 @@ final class ABIDataDecoderTests: XCTestCase {
                     "0x6461766500000000000000000000000000000000000000000000000000000000",
                 ])
             ),
-            Tuple1(value0: "dave")
+            Tuple1("dave")
         )
     }
 
