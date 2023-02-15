@@ -1,0 +1,109 @@
+%{
+    maxTupleSize = 2
+
+    def typeParameter(i):
+        return "T{}".format(i)
+
+    def valueVariable(i):
+        return "value{}".format(i)
+}%
+
+import BigInt
+
+% for tupleSize in range(1, maxTupleSize + 1):
+%   tupleTypeParameters = ", ".join([typeParameter(i) for i in range(tupleSize)])
+
+// Tuple${tupleSize}
+
+public struct Tuple${tupleSize}<${tupleTypeParameters}> {
+
+%   for i in range(tupleSize):
+    public let ${valueVariable(i)}: ${typeParameter(i)}
+%   end
+
+    public init(
+%   for i in range(tupleSize):
+        ${valueVariable(i)}: ${typeParameter(i)}${"," if i < tupleSize - 1 else ""}
+%   end
+    ) {
+%   for i in range(tupleSize):
+        self.${valueVariable(i)} = ${valueVariable(i)}
+%   end
+    }
+
+    public func toTuple() -> (${tupleTypeParameters}) {
+        (
+%   for i in range(tupleSize):
+            ${valueVariable(i)}${"," if i < tupleSize - 1 else ""}
+%   end
+        )
+    }
+}
+
+extension Tuple${tupleSize}: ABIEncodable where ${", ".join([typeParameter(i) + ": ABIEncodable" for i in range(tupleSize)])} {
+    public func encode(to encoder: ABIEncoder) throws {
+        var container = encoder.container()
+
+        let values: [ABIEncodable] = [
+%   for i in range(tupleSize):
+            ${valueVariable(i)}${"," if i < tupleSize - 1 else ""}
+%   end
+        ]
+        var tailOffset = values.reduce(into: 0) {
+            guard let staticValue = $1 as? ABIEncodableStaticType else {
+                $0 += 32
+                return
+            }
+            $0 += staticValue.typeSize
+        }
+
+        var tailBytes = [UInt8]()
+        for value in values {
+            if value is ABIEncodableStaticType {
+                try container.encode(value)
+            } else {
+                try container.encode(BigUInt(tailOffset))
+
+                let encoded = try encoder.encodeImmediately(value)
+                tailOffset += encoded.count
+                tailBytes.append(contentsOf: encoded)
+            }
+        }
+
+        if !tailBytes.isEmpty {
+            try container.encode(bytes: tailBytes)
+        }
+    }
+}
+
+extension Tuple${tupleSize}: ABIEncodableStaticType where ${", ".join([typeParameter(i) + ": ABIEncodableStaticType" for i in range(tupleSize)])} {
+    public var typeSize: Int {
+%   for i in range(tupleSize):
+        ${"+ " if i > 0 else ""}${valueVariable(i)}.typeSize
+%   end
+    }
+}
+
+extension Tuple${tupleSize}: ABIDecodable where ${", ".join([typeParameter(i) + ": ABIDecodable" for i in range(tupleSize)])} {
+    public init(from decoder: ABIDecoder) throws {
+        var container = decoder.container(maxSlots: nil)
+        let baseContainer = container.nestedContainer(maxSlots: nil, bindsIndex: false)
+
+%   for i in range(tupleSize):
+
+        if ${typeParameter(i)}.self is ABIDecodableStaticType.Type {
+            ${valueVariable(i)} = try container.decode(${typeParameter(i)}.self)
+        } else {
+            let offset = try container.decode(BigUInt.self)
+            var tailContainer = baseContainer.advanced(by: Int(offset / 32))
+            ${valueVariable(i)} = try tailContainer.decode(${typeParameter(i)}.self)
+        }
+        
+%   end
+    }
+}
+
+extension Tuple${tupleSize}: Equatable where ${", ".join([typeParameter(i) + ": Equatable" for i in range(tupleSize)])} {}
+extension Tuple${tupleSize}: Hashable where ${", ".join([typeParameter(i) + ": Hashable" for i in range(tupleSize)])} {}
+
+% end

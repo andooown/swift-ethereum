@@ -25,6 +25,10 @@ lint-strict: lint
 format:
 	@${TOOLS_PATH}/swift-format format --in-place --configuration .swift-format ${SWIFT_FORMAT_TARGETS}
 
+.PHONY: gyb
+gyb:
+	@Scripts/run-gyb.sh
+
 .PHONY: gen-mock
 gen-mock:
 	@${TOOLS_PATH}/mockolo \
