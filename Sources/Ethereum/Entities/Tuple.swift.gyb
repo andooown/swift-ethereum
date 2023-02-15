@@ -1,5 +1,5 @@
 %{
-    maxTupleSize = 2
+    maxTupleSize = 10 
 
     def typeParameter(i):
         return "T{}".format(i)
