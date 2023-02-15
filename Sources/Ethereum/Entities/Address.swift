@@ -71,6 +71,12 @@ extension Address: ABIDecodableStaticType {
     }
 }
 
+extension Address: RLPEncodable {
+    public func encodeToRLP() throws -> Data {
+        try Data(rawValue).encodeToRLP()
+    }
+}
+
 private extension Address {
     var rawHexString: String {
         "0x" + rawValue.toHexString()

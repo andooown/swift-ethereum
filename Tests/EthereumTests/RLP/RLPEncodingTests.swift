@@ -22,6 +22,10 @@ final class RLPEncodingTests: XCTestCase {
             try "".encodeToRLP().toHexString(),
             "80"
         )
+        XCTAssertEqual(
+            try Data().encodeToRLP().toHexString(),
+            "80"
+        )
         // the empty list = [ 0xc0 ]
         XCTAssertEqual(
             try [String]().encodeToRLP().toHexString(),
@@ -30,11 +34,11 @@ final class RLPEncodingTests: XCTestCase {
         // the integer 0 = [ 0x80 ]
         XCTAssertEqual(
             try 0.encodeToRLP().toHexString(),
-            "00"
+            "80"
         )
         // the encoded integer 0 ('\x00') = [ 0x00 ]
         XCTAssertEqual(
-            try [UInt8](hex: "0x00").encodeToRLP().toHexString(),
+            try Data(hex: "0x00").encodeToRLP().toHexString(),
             "00"
         )
         // the encoded integer 15 ('\x0f') = [ 0x0f ]
@@ -43,7 +47,7 @@ final class RLPEncodingTests: XCTestCase {
             "0f"
         )
         XCTAssertEqual(
-            try [UInt8](hex: "0x0f").encodeToRLP().toHexString(),
+            try Data(hex: "0x0f").encodeToRLP().toHexString(),
             "0f"
         )
         // the encoded integer 1024 ('\x04\x00') = [ 0x82, 0x04, 0x00 ]
@@ -52,7 +56,7 @@ final class RLPEncodingTests: XCTestCase {
             "820400"
         )
         XCTAssertEqual(
-            try [UInt8](hex: "0x0400").encodeToRLP().toHexString(),
+            try Data(hex: "0x0400").encodeToRLP().toHexString(),
             "820400"
         )
         // the set theoretical representation of three, [ [], [[]], [ [], [[]] ] ] = [ 0xc7, 0xc0, 0xc1, 0xc0, 0xc3, 0xc0, 0xc1, 0xc0 ]
@@ -85,7 +89,7 @@ private extension RLPEncodingTests {
         case nested([RLPNestedList])
         case item(RLPEncodable)
 
-        func encodeToRLP() throws -> [UInt8] {
+        func encodeToRLP() throws -> Data {
             switch self {
             case .nested(let nested):
                 return try nested.encodeToRLP()
