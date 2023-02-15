@@ -3,11 +3,11 @@ import Foundation
 public struct AccessList: RLPEncodable {
     public struct Element: RLPEncodable {
         public let address: Address
-        public let storageKeys: [[UInt8]]
+        public let storageKeys: [Hash]
 
         public init(
             address: Address,
-            storageKeys: [[UInt8]]
+            storageKeys: [Hash]
         ) {
             self.address = address
             self.storageKeys = storageKeys
@@ -16,7 +16,7 @@ public struct AccessList: RLPEncodable {
         public func encodeToRLP() throws -> Data {
             try [
                 AnyRLPEncodable(address),
-                AnyRLPEncodable(storageKeys.map { Data($0) }),
+                AnyRLPEncodable(storageKeys),
             ].encodeToRLP()
         }
     }
