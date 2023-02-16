@@ -80,16 +80,47 @@ final class ABIDataEncoderTests: XCTestCase {
     func testEncodeTuple() throws {
         // Tuple1 - Static
         XCTAssertEqual(
-            try ABIDataEncoder().encode(Tuple1(value0: BigUInt(1))).toHexString(),
+            try ABIDataEncoder().encode(Tuple1(BigUInt(1))).toHexString(),
             "0000000000000000000000000000000000000000000000000000000000000001"
         )
         // Tuple1 - Dynamic
         XCTAssertEqual(
-            try ABIDataEncoder().encode(Tuple1(value0: "dave")).toHexString(),
+            try ABIDataEncoder().encode(Tuple1("dave")).toHexString(),
             [
                 "0000000000000000000000000000000000000000000000000000000000000020",
                 "0000000000000000000000000000000000000000000000000000000000000004",
                 "6461766500000000000000000000000000000000000000000000000000000000",
+            ].joined()
+        )
+
+        // Tuple2 - Static
+        XCTAssertEqual(
+            try ABIDataEncoder().encode(Tuple2(BigUInt(1), BigUInt(2))).toHexString(),
+            [
+                "0000000000000000000000000000000000000000000000000000000000000001",
+                "0000000000000000000000000000000000000000000000000000000000000002",
+            ].joined()
+        )
+        // Tuple2 - Dynamic & Static
+        XCTAssertEqual(
+            try ABIDataEncoder().encode(Tuple2("dave", BigUInt(1))).toHexString(),
+            [
+                "0000000000000000000000000000000000000000000000000000000000000040",
+                "0000000000000000000000000000000000000000000000000000000000000001",
+                "0000000000000000000000000000000000000000000000000000000000000004",
+                "6461766500000000000000000000000000000000000000000000000000000000",
+            ].joined()
+        )
+        // Tuple2 - Dynamic
+        XCTAssertEqual(
+            try ABIDataEncoder().encode(Tuple2("dave", "apple")).toHexString(),
+            [
+                "0000000000000000000000000000000000000000000000000000000000000040",
+                "0000000000000000000000000000000000000000000000000000000000000080",
+                "0000000000000000000000000000000000000000000000000000000000000004",
+                "6461766500000000000000000000000000000000000000000000000000000000",
+                "0000000000000000000000000000000000000000000000000000000000000005",
+                "6170706c65000000000000000000000000000000000000000000000000000000",
             ].joined()
         )
     }

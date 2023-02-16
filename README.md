@@ -14,7 +14,7 @@ You can use `ABIDataEncoder/Decoder`.
 
 ```swift
 // The parameter of ERC20 balanceOf(address) function.
-let parameter = Tuple1(value0: Address(hexString: "0xB9084d9c8A70b8Ecd2b6878ceF735F11b060DE32"))
+let parameter = Tuple1(Address(hexString: "0xB9084d9c8A70b8Ecd2b6878ceF735F11b060DE32"))
 // Encoding
 let encoded = try ABIDataEncoder().encode(parameter)
 // Decoding
