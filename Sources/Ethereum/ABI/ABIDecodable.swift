@@ -35,6 +35,13 @@ extension BigInt: ABIDecodableStaticType {
     }
 }
 
+extension Bool: ABIDecodableStaticType {
+    public init(from decoder: ABIDecoder) throws {
+        let value = try BigUInt(from: decoder)
+        self = value > 0
+    }
+}
+
 extension String: ABIDecodable {
     public init(from decoder: ABIDecoder) throws {
         var container = decoder.container(maxSlots: nil)

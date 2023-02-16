@@ -54,6 +54,17 @@ final class ABIDataEncoderTests: XCTestCase {
         )
     }
 
+    func testEncodeBool() throws {
+        XCTAssertEqual(
+            try ABIDataEncoder().encode(true).toHexString(),
+            "0000000000000000000000000000000000000000000000000000000000000001"
+        )
+        XCTAssertEqual(
+            try ABIDataEncoder().encode(false).toHexString(),
+            "0000000000000000000000000000000000000000000000000000000000000000"
+        )
+    }
+
     func testEncodeAddress() throws {
         XCTAssertEqual(
             try ABIDataEncoder().encode(Address()).toHexString(),
