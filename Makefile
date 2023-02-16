@@ -32,9 +32,8 @@ gyb:
 .PHONY: gen-mock
 gen-mock:
 	@${TOOLS_PATH}/mockolo \
-		--sourcedirs Domains/Sources/Repositories \
-		--custom-imports Repositories \
-		--destination Domains/Sources/RepositoriesMock/Mock.generated.swift
+		--sourcedirs Sources/Ethereum \
+		--destination Sources/Ethereum/Mock.generated.swift
 
 .PHONY: build
 build:

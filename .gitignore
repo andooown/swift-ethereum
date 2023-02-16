@@ -8,5 +8,8 @@ DerivedData/
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 .netrc
 
+# Mockolo
+*.generated.swift
+
 # gyb
 /gyb
