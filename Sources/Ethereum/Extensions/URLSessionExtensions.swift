@@ -3,7 +3,7 @@ import Foundation
 #if canImport(FoundationNetworking)
     internal extension URLSession {
         func data(for request: URLRequest) async throws -> (Data, URLResponse) {
-            withCheckedThrowingContinuation { continuation in
+            try await withCheckedThrowingContinuation { continuation in
                 dataTask(with: request) { data, response, error in
                     if let error = error {
                         continuation.resume(throwing: error)
