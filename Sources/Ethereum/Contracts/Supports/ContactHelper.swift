@@ -2,13 +2,17 @@ import CryptoSwift
 import Foundation
 
 public enum ContactHelper {
+    public static func functionSignature(selector: String) -> [UInt8] {
+        Array(SHA3(variant: .keccak256).calculate(for: selector.bytes).prefix(4))
+    }
+
     public static func makeTransaction<Parameter: ABIEncodable>(
         contract: Address,
         selector: String,
         parameter: Parameter,
         options: TransactionOptions
     ) throws -> RawTransaction {
-        let signature = Array(SHA3(variant: .keccak256).calculate(for: selector.bytes).prefix(4))
+        let signature = functionSignature(selector: selector)
         let encoded = try ABIDataEncoder().encode(parameter)
         let data = Data(signature) + encoded
 

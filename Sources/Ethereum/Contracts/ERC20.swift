@@ -16,7 +16,7 @@ public struct ERC20 {
 
     /// function name() public view returns (string)
     public func name() async throws -> String {
-        let signature = Array(SHA3(variant: .keccak256).calculate(for: "name()".bytes).prefix(4))
+        let signature = ContactHelper.functionSignature(selector: "name()")
         let request = Eth.Call(
             params: .init(
                 to: contract,
@@ -33,7 +33,7 @@ public struct ERC20 {
 
     /// function symbol() public view returns (string)
     public func symbol() async throws -> String {
-        let signature = Array(SHA3(variant: .keccak256).calculate(for: "symbol()".bytes).prefix(4))
+        let signature = ContactHelper.functionSignature(selector: "symbol()")
         let request = Eth.Call(
             params: .init(
                 to: contract,
@@ -50,8 +50,7 @@ public struct ERC20 {
 
     /// function decimals() public view returns (uint8)
     public func decimals() async throws -> BigUInt {
-        let signature = Array(
-            SHA3(variant: .keccak256).calculate(for: "decimals()".bytes).prefix(4))
+        let signature = ContactHelper.functionSignature(selector: "decimals()")
         let request = Eth.Call(
             params: .init(
                 to: contract,
@@ -68,8 +67,7 @@ public struct ERC20 {
 
     /// function totalSupply() public view returns (uint256)
     public func totalSupply() async throws -> BigUInt {
-        let signature = Array(
-            SHA3(variant: .keccak256).calculate(for: "totalSupply()".bytes).prefix(4))
+        let signature = ContactHelper.functionSignature(selector: "totalSupply()")
         let request = Eth.Call(
             params: .init(
                 to: contract,
@@ -86,8 +84,7 @@ public struct ERC20 {
 
     /// function balanceOf(address _owner) public view returns (uint256 balance)
     public func balanceOf(owner: Address) async throws -> BigUInt {
-        let signature = Array(
-            SHA3(variant: .keccak256).calculate(for: "balanceOf(address)".bytes).prefix(4))
+        let signature = ContactHelper.functionSignature(selector: "balanceOf(address)")
         let parameters = Tuple1(owner)
         let encoded = try ABIDataEncoder().encode(parameters)
         let request = Eth.Call(
