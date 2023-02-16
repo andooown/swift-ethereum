@@ -97,6 +97,7 @@ final class ABIDataDecoderTests: XCTestCase {
     }
 
     func testDecodeTuple() throws {
+        // Tuple1 - Static
         XCTAssertEqual(
             try ABIDataDecoder().decode(
                 Tuple1<BigInt>.self,
@@ -106,6 +107,7 @@ final class ABIDataDecoderTests: XCTestCase {
             ),
             Tuple1(1_193_046)
         )
+        // Tuple1 - Dynamic
         XCTAssertEqual(
             try ABIDataDecoder().decode(
                 Tuple1<String>.self,
@@ -116,6 +118,46 @@ final class ABIDataDecoderTests: XCTestCase {
                 ])
             ),
             Tuple1("dave")
+        )
+
+        // Tuple2 - Static
+        XCTAssertEqual(
+            try ABIDataDecoder().decode(
+                Tuple2<BigUInt, BigUInt>.self,
+                from: inputBytes(from: [
+                    "0000000000000000000000000000000000000000000000000000000000000001",
+                    "0000000000000000000000000000000000000000000000000000000000000002",
+                ])
+            ),
+            Tuple2(BigUInt(1), BigUInt(2))
+        )
+        // Tuple2 - Dynamic & Static
+        XCTAssertEqual(
+            try ABIDataDecoder().decode(
+                Tuple2<String, BigUInt>.self,
+                from: inputBytes(from: [
+                    "0000000000000000000000000000000000000000000000000000000000000040",
+                    "0000000000000000000000000000000000000000000000000000000000000001",
+                    "0000000000000000000000000000000000000000000000000000000000000004",
+                    "6461766500000000000000000000000000000000000000000000000000000000",
+                ])
+            ),
+            Tuple2("dave", BigUInt(1))
+        )
+        // Tuple2 - Dynamic
+        XCTAssertEqual(
+            try ABIDataDecoder().decode(
+                Tuple2<String, String>.self,
+                from: inputBytes(from: [
+                    "0000000000000000000000000000000000000000000000000000000000000040",
+                    "0000000000000000000000000000000000000000000000000000000000000080",
+                    "0000000000000000000000000000000000000000000000000000000000000004",
+                    "6461766500000000000000000000000000000000000000000000000000000000",
+                    "0000000000000000000000000000000000000000000000000000000000000005",
+                    "6170706c65000000000000000000000000000000000000000000000000000000",
+                ])
+            ),
+            Tuple2("dave", "apple")
         )
     }
 
