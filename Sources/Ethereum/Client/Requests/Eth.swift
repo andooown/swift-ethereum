@@ -30,10 +30,10 @@ public enum Eth {
         }
     }
 
-    public struct Call: JSONRPCRequest {
+    public struct Call: JSONRPCRequest, Equatable {
         public typealias Response = String
 
-        public struct Parameters: Encodable {
+        public struct Parameters: Encodable, Equatable {
             let callParams: CallParams
             let block: RequestBlock
 
@@ -44,7 +44,7 @@ public enum Eth {
             }
         }
 
-        public struct CallParams: Encodable {
+        public struct CallParams: Encodable, Equatable {
             public let from: Address?
             public let to: Address
             public let gas: BigUInt?

@@ -1,7 +1,7 @@
 import BigInt
 import Foundation
 
-public enum RequestBlock: Encodable {
+public enum RequestBlock: Encodable, Equatable {
     case block(BigUInt)
     case earliest
     case latest

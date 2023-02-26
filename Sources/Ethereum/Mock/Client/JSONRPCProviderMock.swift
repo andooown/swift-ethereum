@@ -9,6 +9,8 @@ public class JSONRPCProviderMock: JSONRPCProviderProtocol {
     public private(set) var requests = [Any]()
     public private(set) var responses = [ObjectIdentifier: [Result<Any, Error>]]()
 
+    public init() {}
+
     public func send<R>(_ request: R) async throws -> R.Response where R: JSONRPCRequest {
         self.requests.append(request)
 
@@ -44,5 +46,9 @@ public class JSONRPCProviderMock: JSONRPCProviderProtocol {
         }
 
         self.responses[key]?.append(contentsOf: responses.map { $0.map { $0 as Any } })
+    }
+
+    public func requests<R>(for requestType: R.Type) -> [R] {
+        requests.compactMap { $0 as? R }
     }
 }
