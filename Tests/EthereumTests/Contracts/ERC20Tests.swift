@@ -103,4 +103,53 @@ final class ERC20Tests: XCTestCase {
             ]
         )
     }
+
+    func testBalanceOf() async throws {
+        let response = [
+            "000000000000000000000000000000000000000000000000000000000000007B"
+        ].joined()
+        provider.register(for: Eth.Call.self, responses: .success("0x" + response))
+
+        let owner = Address(hexString: "0x0000000000000000000000000000000000000001")
+        let actual = try await contract.balanceOf(owner: owner)
+        XCTAssertEqual(actual, 123)
+
+        let paramsData = try ABIDataEncoder().encode(Tuple1(owner))
+        XCTAssertEqual(
+            provider.requests(for: Eth.Call.self),
+            [
+                Eth.Call(
+                    params: .init(
+                        to: address,
+                        data: .init(hex: "70a08231") + paramsData
+                    )
+                )
+            ]
+        )
+    }
+
+    func testAllowance() async throws {
+        let response = [
+            "000000000000000000000000000000000000000000000000000000000000007B"
+        ].joined()
+        provider.register(for: Eth.Call.self, responses: .success("0x" + response))
+
+        let owner = Address(hexString: "0x0000000000000000000000000000000000000001")
+        let spender = Address(hexString: "0x0000000000000000000000000000000000000002")
+        let actual = try await contract.allowance(owner: owner, spender: spender)
+        XCTAssertEqual(actual, 123)
+
+        let paramsData = try ABIDataEncoder().encode(Tuple2(owner, spender))
+        XCTAssertEqual(
+            provider.requests(for: Eth.Call.self),
+            [
+                Eth.Call(
+                    params: .init(
+                        to: address,
+                        data: .init(hex: "dd62ed3e") + paramsData
+                    )
+                )
+            ]
+        )
+    }
 }
