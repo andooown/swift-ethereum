@@ -74,6 +74,27 @@ final class ABIDataDecoderTests: XCTestCase {
         )
     }
 
+    func testDecodeBool() throws {
+        XCTAssertEqual(
+            try ABIDataDecoder().decode(
+                Bool.self,
+                from: inputBytes(from: [
+                    "0x0000000000000000000000000000000000000000000000000000000000000001"
+                ])
+            ),
+            true
+        )
+        XCTAssertEqual(
+            try ABIDataDecoder().decode(
+                Bool.self,
+                from: inputBytes(from: [
+                    "0x0000000000000000000000000000000000000000000000000000000000000000"
+                ])
+            ),
+            false
+        )
+    }
+
     func testDecodeString() throws {
         XCTAssertEqual(
             try ABIDataDecoder().decode(

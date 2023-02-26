@@ -43,6 +43,16 @@ extension BigInt: ABIEncodableStaticType {
     }
 }
 
+extension Bool: ABIEncodableStaticType {
+    public var typeSize: Int {
+        32
+    }
+
+    public func encode(to encoder: ABIEncoder) throws {
+        try BigUInt(self ? 1 : 0).encode(to: encoder)
+    }
+}
+
 extension String: ABIEncodable {
     public func encode(to encoder: ABIEncoder) throws {
         var container = encoder.container()
