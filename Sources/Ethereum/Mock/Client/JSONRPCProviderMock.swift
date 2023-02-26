@@ -1,7 +1,19 @@
+import Foundation
+
 public class JSONRPCProviderMock: JSONRPCProviderProtocol {
-    public enum MockError: Error {
+    public enum MockError: Error, LocalizedError {
         case noResponses
         case unableToCast
+
+        public var errorDescription: String {
+            switch self {
+            case .noResponses:
+                return "No responses for given request type."
+
+            case .unableToCast:
+                return "Unable to cast registered response to expected response type."
+            }
+        }
     }
 
     // apple/swift-format doesn't support `any` keyword at the moment.
