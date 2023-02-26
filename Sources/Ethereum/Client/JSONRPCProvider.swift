@@ -1,7 +1,6 @@
 import BigInt
 import Foundation
 
-/// @mockable
 public protocol JSONRPCProviderProtocol {
     func send<R: JSONRPCRequest>(_ request: R) async throws -> R.Response
 }
