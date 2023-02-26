@@ -33,7 +33,7 @@ gyb:
 gen-mock:
 	@${TOOLS_PATH}/mockolo \
 		--sourcedirs Sources/Ethereum \
-		--destination Sources/Ethereum/Mock.generated.swift
+		--destination Sources/Ethereum/Mock/Mock.generated.swift
 
 .PHONY: build
 build:
