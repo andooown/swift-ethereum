@@ -115,10 +115,10 @@ public enum Eth {
         }
     }
 
-    public struct SendRawTransaction: JSONRPCRequest {
+    public struct SendRawTransaction: JSONRPCRequest, Equatable {
         public typealias Response = String
 
-        public struct Parameters: Encodable {
+        public struct Parameters: Encodable, Equatable {
             let data: Data
 
             public func encode(to encoder: Encoder) throws {
